@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 
 namespace ResizablePanel
 {
+   /// <summary>
+   /// Derived from the Thumb class. Implements thumbs that can be used for resizing an adorned element.
+   /// </summary>
    public class ResizeThumb : Thumb
    {
+      /// <summary>
+      /// Bitfield describing where the thumb is positioned in relation to the adorned element
+      /// </summary>
       [Flags]
       public enum ThumbPosition
       {
@@ -22,7 +24,9 @@ namespace ResizablePanel
          BottomRight = Bottom | Right
       }
 
-
+      /// <summary>
+      /// Bitfield describing the directions the thumb can be resized in relation to the adorned element
+      /// </summary>
       [Flags]
       public enum AllowedDragDirections
       {
@@ -57,12 +61,16 @@ namespace ResizablePanel
 
       #region Methods
 
-
+      /// <summary>
+      /// Constructs instance of ResizeThumb
+      /// </summary>
+      /// <param name="thumbPosition">Position for this thumb</param>
+      /// <param name="allowedDragDirections">Directions this thumb can be resized</param>
       public ResizeThumb(ThumbPosition thumbPosition, AllowedDragDirections allowedDragDirections)
       {
          if (!IsValidPosition(thumbPosition))
          {
-            throw new ArgumentException($"0x{thumbPosition:X1} is an invalid thumb position", "thumbPosition");
+            throw new ArgumentException($"'{thumbPosition}' is an invalid thumb position", "thumbPosition");
          }
 
          Position = thumbPosition;
@@ -70,7 +78,11 @@ namespace ResizablePanel
       }
 
 
-
+      /// <summary>
+      /// Helper method for checking if given thumb positions are valid
+      /// </summary>
+      /// <param name="thumbPosition">Thumb position to validate</param>
+      /// <returns>true if valid, false otherwise</returns>
       private bool IsValidPosition(ThumbPosition thumbPosition)
       {
          // Invalid positions

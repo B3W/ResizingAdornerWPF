@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:ResizablePanel"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Canvas x:Name="MainPanel" Background="LightBlue">
-      <Button x:Name="MyButton" Content="BUTTON" Canvas.Top="80" Canvas.Left="80" Width="200" Height="100"/>
-    </Canvas>
+   <Canvas x:Name="MainPanel" Background="LightBlue">
+      <Button x:Name="MyButton" Content="BUTTON" Canvas.Top="40" Canvas.Left="80" Width="200" Height="100"/>
+      <TextBox x:Name="MyTextBox" Canvas.Top="60" Canvas.Left="435"  Width="250" Height="150" Background="LightGreen"/>
+      <RichTextBox x:Name="MyRichTextBox" Canvas.Top="180" Canvas.Left="105"  Width="250" Height="150" Background="LightSalmon"/>
+   </Canvas>
 </Window>

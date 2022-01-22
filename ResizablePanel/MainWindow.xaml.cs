@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ResizablePanel
 {
@@ -32,6 +21,12 @@ namespace ResizablePanel
          // Adorn all elements of the main panel
          ResizingAdornerConfig btnConfig = new ResizingAdornerConfig();
          AdornerLayer.GetAdornerLayer(MyButton).Add(new ResizingAdorner(MyButton, btnConfig));
+
+         ResizingAdornerConfig txtbxConfig = new ResizingAdornerConfig();
+         AdornerLayer.GetAdornerLayer(MyTextBox).Add(new ResizingAdorner(MyTextBox, txtbxConfig));
+
+         ResizingAdornerConfig rtxtbxConfig = new ResizingAdornerConfig();
+         AdornerLayer.GetAdornerLayer(MyRichTextBox).Add(new ResizingAdorner(MyRichTextBox, rtxtbxConfig));
       }
    }
 }
