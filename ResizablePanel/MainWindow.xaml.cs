@@ -22,7 +22,16 @@ namespace ResizablePanel
    {
       public MainWindow()
       {
+         ContentRendered += MainWindow_ContentRendered;
+
          InitializeComponent();
+      }
+
+      private void MainWindow_ContentRendered(object sender, EventArgs e)
+      {
+         // Adorn all elements of the main panel
+         ResizingAdornerConfig btnConfig = new ResizingAdornerConfig();
+         AdornerLayer.GetAdornerLayer(MyButton).Add(new ResizingAdorner(MyButton, btnConfig));
       }
    }
 }

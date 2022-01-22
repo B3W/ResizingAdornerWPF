@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ResizablePanel"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <Canvas x:Name="MainPanel" Background="LightBlue">
+      <Button x:Name="MyButton" Content="BUTTON" Canvas.Top="80" Canvas.Left="80" Width="200" Height="100"/>
+    </Canvas>
 </Window>
