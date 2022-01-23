@@ -85,7 +85,7 @@ namespace ResizablePanel
       /// <returns>true if valid, false otherwise</returns>
       private bool IsValidPosition(ThumbPosition thumbPosition)
       {
-         // Invalid positions
+         // Invalid position definitions
          const ThumbPosition topBottom = ThumbPosition.Top | ThumbPosition.Bottom;
          const ThumbPosition leftRight = ThumbPosition.Left | ThumbPosition.Right;
 

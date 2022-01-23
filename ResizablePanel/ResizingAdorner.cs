@@ -11,7 +11,9 @@ using ThumbPosition = ResizablePanel.ResizeThumb.ThumbPosition;
 
 namespace ResizablePanel
 {
-
+   /// <summary>
+   /// Configuration for the resizing adorner
+   /// </summary>
    public class ResizingAdornerConfig
    {
       public int ThumbThickness { get; } = 10;
@@ -22,7 +24,9 @@ namespace ResizablePanel
    }
 
 
-
+   /// <summary>
+   /// Adorner that allows for resizing of the adorned element
+   /// </summary>
    public class ResizingAdorner : Adorner
    {
       /// <summary>
@@ -70,16 +74,24 @@ namespace ResizablePanel
          { ThumbPosition.BottomRight,  AllowedDragDirections.All },
       };
 
-
+      /// <summary>
+      /// Adorned element as a framework element. Gives access to some layout properties.
+      /// </summary>
       private readonly FrameworkElement _adornedFrameworkElement;
 
-
+      /// <summary>
+      /// Configuration of adorner
+      /// </summary>
       private readonly ResizingAdornerConfig _config;
 
-
+      /// <summary>
+      /// Minimium width of the adorned element
+      /// </summary>
       private readonly double _minWidth;
 
-
+      /// <summary>
+      /// Minimum height of the adorned element
+      /// </summary>
       private readonly double _minHeight;
 
       #endregion // Fields
@@ -290,23 +302,41 @@ namespace ResizablePanel
          // Resize vertically
          if ((thumbPosition & ThumbPosition.Top) == ThumbPosition.Top)
          {
-            Canvas.SetTop(AdornedElement, Canvas.GetTop(AdornedElement) + deltaY);
-            _adornedFrameworkElement.Height -= deltaY;
+            double newHeight = _adornedFrameworkElement.Height - deltaY;
+
+            if (newHeight > _minHeight)
+            {
+               Canvas.SetTop(AdornedElement, Canvas.GetTop(AdornedElement) + deltaY);
+               _adornedFrameworkElement.Height = newHeight;
+            }
+            else
+            {
+               _adornedFrameworkElement.Height = _minHeight;
+            }
          }
          else if ((thumbPosition & ThumbPosition.Bottom) == ThumbPosition.Bottom)
          {
-            _adornedFrameworkElement.Height += deltaY;
+            _adornedFrameworkElement.Height = Math.Max(_adornedFrameworkElement.Height + deltaY, _minHeight);
          }
 
          // Resize horizontally
          if ((thumbPosition & ThumbPosition.Left) == ThumbPosition.Left)
          {
-            Canvas.SetLeft(AdornedElement, Canvas.GetLeft(AdornedElement) + deltaX);
-            _adornedFrameworkElement.Width -= deltaX;
+            double newWidth = _adornedFrameworkElement.Width - deltaX;
+
+            if (newWidth > _minWidth)
+            {
+               Canvas.SetLeft(AdornedElement, Canvas.GetLeft(AdornedElement) + deltaX);
+               _adornedFrameworkElement.Width = newWidth;
+            }
+            else
+            {
+               _adornedFrameworkElement.Width = _minWidth;
+            }
          }
          else if ((thumbPosition & ThumbPosition.Right) == ThumbPosition.Right)
          {
-            _adornedFrameworkElement.Width += deltaX;
+            _adornedFrameworkElement.Width = Math.Max(_adornedFrameworkElement.Width + deltaX, _minWidth);
          }
       }
 

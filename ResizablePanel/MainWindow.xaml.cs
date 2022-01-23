@@ -27,6 +27,9 @@ namespace ResizablePanel
 
          ResizingAdornerConfig rtxtbxConfig = new ResizingAdornerConfig();
          AdornerLayer.GetAdornerLayer(MyRichTextBox).Add(new ResizingAdorner(MyRichTextBox, rtxtbxConfig));
+
+         ResizingAdornerConfig borderConfig = new ResizingAdornerConfig();
+         AdornerLayer.GetAdornerLayer(MyBorder).Add(new ResizingAdorner(MyBorder, borderConfig));
       }
    }
 }
