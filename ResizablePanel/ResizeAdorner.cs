@@ -149,6 +149,12 @@ namespace ResizablePanel
 
       #region Methods
 
+      /// <summary>
+      /// Constructs a ResizeAdorner attached to the given UIElement
+      /// </summary>
+      /// <param name="adornedElement">UIElement to adorn. Must be child of Canvas.</param>
+      /// <param name="adornerConfig">Configuration of adorner</param>
+      /// <exception cref="ArgumentException"></exception>
       public ResizeAdorner(UIElement adornedElement, ResizeAdornerConfig adornerConfig) : base(adornedElement)
       {
          _adornedFrameworkElement = adornedElement as FrameworkElement;
@@ -188,6 +194,7 @@ namespace ResizablePanel
       }
 
 
+      // Overriding FrameworkElement method to place adorners in correct location
       protected override Size ArrangeOverride(Size finalSize)
       {
          _resizeThumbs[(int)ThumbIndex.Top].Arrange(TopThumbRect);
@@ -203,7 +210,7 @@ namespace ResizablePanel
       }
 
 
-      // Overriding FrameworkElement property as this adorner will contain more than one visual
+      // Overriding FrameworkElement method as this adorner will contain more than one visual
       // Allows WPF framework to interface with this adorner's visual collection
       protected override Visual GetVisualChild(int index)
       {
@@ -232,14 +239,22 @@ namespace ResizablePanel
       }
 
 
-
+      /// <summary>
+      /// Handler for Thumb DragStarted event
+      /// </summary>
+      /// <param name="sender">Thumb which started drag</param>
+      /// <param name="e">Information on drag start</param>
       private void OnDragStarted(object sender, DragStartedEventArgs e)
       {
-         // TODO
+         // Implement as needed
       }
 
 
-
+      /// <summary>
+      /// Handler for Thumb DragDelta event
+      /// </summary>
+      /// <param name="sender">Thumb which was dragged</param>
+      /// <param name="e">Information on drag</param>
       private void OnDragDelta(object sender, DragDeltaEventArgs e)
       {
          ResizeThumb resizeThumb = (ResizeThumb)sender;
@@ -288,14 +303,23 @@ namespace ResizablePanel
       }
 
 
-
+      /// <summary>
+      /// Handler for Thumb DragCompleted event
+      /// </summary>
+      /// <param name="sender">Thumb which was dragged</param>
+      /// <param name="e">Information on drag completion</param>
       private void OnDragCompleted(object sender, DragCompletedEventArgs e)
       {
-         // TODO
+         // Implement as needed
       }
 
 
-
+      /// <summary>
+      /// Calculates how the element should be resized based on thumb dragged and drag amount
+      /// </summary>
+      /// <param name="thumbPosition">Position of Thumb that was dragged</param>
+      /// <param name="deltaX">Amount thumb was dragged in X direction</param>
+      /// <param name="deltaY">Amount thumb was dragged in Y direction</param>
       private void ResizeElement(ThumbPosition thumbPosition, double deltaX, double deltaY)
       {
          // Resize vertically
