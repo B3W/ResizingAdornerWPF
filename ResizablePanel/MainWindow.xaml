@@ -5,12 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResizablePanel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Resizing Adorner Test" Height="450" Width="800">
    <Canvas x:Name="MainPanel" Background="LightBlue">
-      <Button x:Name="MyButton" Content="BUTTON" Canvas.Top="40" Canvas.Left="80" Width="200" Height="100"/>
-      <TextBox x:Name="MyTextBox" Canvas.Top="20" Canvas.Left="485"  Width="250" Height="150" Background="LightGreen"/>
-      <RichTextBox x:Name="MyRichTextBox" Canvas.Top="180" Canvas.Left="105"  Width="250" Height="150" Background="LightSalmon"/>
-      <Border x:Name="MyBorder" Canvas.Top="230" Canvas.Left="415"  Width="250" Height="150" Background="LightSteelBlue"
-              MinWidth="80" MinHeight="80"/>
+      <Button x:Name="MyButton" Content="BUTTON"
+              Canvas.Top="40" Canvas.Left="80" Width="200" Height="100"/>
+
+      <TextBox x:Name="MyTextBox" Text="TEXTBOX" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="LightGreen"
+               Canvas.Top="20" Canvas.Left="485"  Width="250" Height="150"/>
+
+      <RichTextBox x:Name="MyRichTextBox" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="LightSalmon"
+                   Canvas.Top="180" Canvas.Left="105"  Width="250" Height="150"/>
+
+      <Border x:Name="MyBorder" Background="LightSteelBlue"
+              Canvas.Top="230" Canvas.Left="415"  Width="250" Height="150" MinWidth="80" MinHeight="80">
+         <Label x:Name="MyBorderLabel" Content="BORDER" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+      </Border>
    </Canvas>
 </Window>
