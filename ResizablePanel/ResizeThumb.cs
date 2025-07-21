@@ -1,4 +1,9 @@
-﻿using System;
+﻿//
+// Copyright (c) 2025 Weston Berg
+//
+// SPDX-License-Identifier: MIT
+//
+using System;
 using System.Windows.Controls.Primitives;
 
 namespace ResizablePanel
