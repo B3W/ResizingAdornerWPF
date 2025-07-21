@@ -14,7 +14,7 @@ namespace ResizablePanel
    /// <summary>
    /// Configuration for the resizing adorner
    /// </summary>
-   public class ResizingAdornerConfig
+   public class ResizeAdornerConfig
    {
       public int ThumbThickness { get; } = 10;
 
@@ -27,7 +27,7 @@ namespace ResizablePanel
    /// <summary>
    /// Adorner that allows for resizing of the adorned element
    /// </summary>
-   public class ResizingAdorner : Adorner
+   public class ResizeAdorner : Adorner
    {
       /// <summary>
       /// Enumeration defining where each thumb resides in the thumbs array
@@ -82,7 +82,7 @@ namespace ResizablePanel
       /// <summary>
       /// Configuration of adorner
       /// </summary>
-      private readonly ResizingAdornerConfig _config;
+      private readonly ResizeAdornerConfig _config;
 
       /// <summary>
       /// Minimium width of the adorned element
@@ -149,7 +149,7 @@ namespace ResizablePanel
 
       #region Methods
 
-      public ResizingAdorner(UIElement adornedElement, ResizingAdornerConfig adornerConfig) : base(adornedElement)
+      public ResizeAdorner(UIElement adornedElement, ResizeAdornerConfig adornerConfig) : base(adornedElement)
       {
          _adornedFrameworkElement = adornedElement as FrameworkElement;
          _config = adornerConfig;
@@ -186,7 +186,6 @@ namespace ResizablePanel
          MinWidth = _minWidth;
          MinHeight = _minHeight;
       }
-
 
 
       protected override Size ArrangeOverride(Size finalSize)

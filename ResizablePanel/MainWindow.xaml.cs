@@ -23,17 +23,17 @@ namespace ResizablePanel
       private void MainWindow_ContentRendered(object sender, EventArgs e)
       {
          // Adorn all elements of the main panel
-         ResizingAdornerConfig btnConfig = new ResizingAdornerConfig();
-         AdornerLayer.GetAdornerLayer(MyButton).Add(new ResizingAdorner(MyButton, btnConfig));
+         ResizeAdornerConfig btnConfig = new ResizeAdornerConfig();
+         AdornerLayer.GetAdornerLayer(MyButton).Add(new ResizeAdorner(MyButton, btnConfig));
 
-         ResizingAdornerConfig txtbxConfig = new ResizingAdornerConfig();
-         AdornerLayer.GetAdornerLayer(MyTextBox).Add(new ResizingAdorner(MyTextBox, txtbxConfig));
+         ResizeAdornerConfig txtbxConfig = new ResizeAdornerConfig();
+         AdornerLayer.GetAdornerLayer(MyTextBox).Add(new ResizeAdorner(MyTextBox, txtbxConfig));
 
-         ResizingAdornerConfig rtxtbxConfig = new ResizingAdornerConfig();
-         AdornerLayer.GetAdornerLayer(MyRichTextBox).Add(new ResizingAdorner(MyRichTextBox, rtxtbxConfig));
+         ResizeAdornerConfig rtxtbxConfig = new ResizeAdornerConfig();
+         AdornerLayer.GetAdornerLayer(MyRichTextBox).Add(new ResizeAdorner(MyRichTextBox, rtxtbxConfig));
 
-         ResizingAdornerConfig borderConfig = new ResizingAdornerConfig();
-         AdornerLayer.GetAdornerLayer(MyBorder).Add(new ResizingAdorner(MyBorder, borderConfig));
+         ResizeAdornerConfig borderConfig = new ResizeAdornerConfig();
+         AdornerLayer.GetAdornerLayer(MyBorder).Add(new ResizeAdorner(MyBorder, borderConfig));
       }
    }
 }
