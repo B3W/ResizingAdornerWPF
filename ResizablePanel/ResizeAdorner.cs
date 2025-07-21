@@ -99,6 +99,11 @@ namespace ResizablePanel
       /// </summary>
       private readonly Rect[] _thumbCoordinates;
 
+      /// <summary>
+      /// Holds the start bounds for the current drag operation
+      /// </summary>
+      private Rect _dragStartBounds;
+
       #endregion // Fields
 
 
@@ -238,7 +243,8 @@ namespace ResizablePanel
       /// <param name="e">Information on drag start</param>
       private void OnDragStarted(object sender, DragStartedEventArgs e)
       {
-         // Implement as needed
+         Vector elementVector = VisualTreeHelper.GetOffset(AdornedElement);
+         _dragStartBounds = new Rect(elementVector.X, elementVector.Y, _adornedFrameworkElement.Width, _adornedFrameworkElement.Height);
       }
 
 
@@ -291,7 +297,8 @@ namespace ResizablePanel
                break;
          }
 
-         ResizeElement(resizeThumb.Position, deltaX, deltaY);
+         bool preserveRatio = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift);
+         ResizeElement(resizeThumb, deltaX, deltaY, preserveRatio);
       }
 
 
@@ -309,49 +316,157 @@ namespace ResizablePanel
       /// <summary>
       /// Calculates how the element should be resized based on thumb dragged and drag amount
       /// </summary>
-      /// <param name="thumbPosition">Position of Thumb that was dragged</param>
+      /// <param name="thumb">Thumb that was dragged</param>
       /// <param name="deltaX">Amount thumb was dragged in X direction</param>
       /// <param name="deltaY">Amount thumb was dragged in Y direction</param>
-      private void ResizeElement(ThumbPosition thumbPosition, double deltaX, double deltaY)
+      /// <param name="preserveAspectRatio">Flag indicating if the aspect ratio should be reserved during resize</param>
+      private void ResizeElement(ResizeThumb thumb, double deltaX, double deltaY, bool preserveAspectRatio)
       {
-         // Resize vertically
-         if ((thumbPosition & ThumbPosition.Top) == ThumbPosition.Top)
-         {
-            double newHeight = _adornedFrameworkElement.Height - deltaY;
+         double calculatedX = Canvas.GetLeft(AdornedElement);
+         double calculatedY = Canvas.GetTop(AdornedElement);
+         double calculatedWidth = _adornedFrameworkElement.Width;
+         double calculatedHeight = _adornedFrameworkElement.Height;
 
-            if (newHeight > _minHeight)
+         // Calculate element resizing without any scaling
+         ResizeElementHorizontal(thumb, calculatedWidth, calculatedX, deltaX, out calculatedWidth, out calculatedX, out bool repositionX);
+         ResizeElementVertical(thumb, calculatedHeight, calculatedY, deltaY, out calculatedHeight, out calculatedY, out bool repositionY);
+
+         // Calculate element resizing with scaling if necessary
+         if (preserveAspectRatio)
+         {
+            // Calculate scale to preserve original aspect ratio
+            double scaleWidth = calculatedWidth / _dragStartBounds.Width;
+            double scaleHeight = calculatedHeight / _dragStartBounds.Height;
+            double scale;
+
+            if (thumb.DragDirections == AllowedDragDirections.All)
             {
-               Canvas.SetTop(AdornedElement, Canvas.GetTop(AdornedElement) + deltaY);
-               _adornedFrameworkElement.Height = newHeight;
+               scale = Math.Min(scaleWidth, scaleHeight);
             }
             else
             {
-               _adornedFrameworkElement.Height = _minHeight;
+               // Allow non-omni directional thumbs to also support preserving ratio in both resize directions
+               if (calculatedWidth > _adornedFrameworkElement.Width || calculatedHeight > _adornedFrameworkElement.Height)
+               {
+                  scale = Math.Max(scaleWidth, scaleHeight);
+               }
+               else
+               {
+                  scale = Math.Min(scaleWidth, scaleHeight);
+               }
+            }
+
+            calculatedWidth = _dragStartBounds.Width * scale;
+            calculatedHeight = _dragStartBounds.Height * scale;
+
+            // Account for X/Y position when preserving aspect ratio
+            // Shift X/Y based on the change in width/height from the previous resize
+            if (repositionX)
+            {
+               calculatedX = Canvas.GetLeft(AdornedElement) - (calculatedWidth - _adornedFrameworkElement.Width);
+            }
+
+            if (repositionY)
+            {
+               calculatedY = Canvas.GetTop(AdornedElement) - (calculatedHeight - _adornedFrameworkElement.Height);
             }
          }
-         else if ((thumbPosition & ThumbPosition.Bottom) == ThumbPosition.Bottom)
-         {
-            _adornedFrameworkElement.Height = Math.Max(_adornedFrameworkElement.Height + deltaY, _minHeight);
-         }
 
-         // Resize horizontally
-         if ((thumbPosition & ThumbPosition.Left) == ThumbPosition.Left)
+         Canvas.SetLeft(AdornedElement, calculatedX);
+         Canvas.SetTop(AdornedElement, calculatedY);
+         _adornedFrameworkElement.Width = calculatedWidth;
+         _adornedFrameworkElement.Height = calculatedHeight;
+      }
+
+
+      /// <summary>
+      /// Helper method for calculating the amount of horizontal resizing required
+      /// </summary>
+      /// <param name="thumb">Thumb that triggered resizing</param>
+      /// <param name="initialWidth">Initial width of the adorned element</param>
+      /// <param name="initialX">Initial X-coordinate of the adorned element</param>
+      /// <param name="deltaX">Change in X from the drag</param>
+      /// <param name="calculatedWidth">Calculated width after drag</param>
+      /// <param name="calculatedX">Calculated X after drag</param>
+      /// <param name="repositionX">Flag indicated if X-coordinate of adorned element changed</param>
+      private void ResizeElementHorizontal(ResizeThumb thumb, double initialWidth, double initialX, double deltaX, out double calculatedWidth, out double calculatedX, out bool repositionX)
+      {
+         calculatedWidth = initialWidth;
+         calculatedX = initialX;
+         repositionX = false;
+
+         if ((thumb.Position & ThumbPosition.Left) == ThumbPosition.Left)
          {
-            double newWidth = _adornedFrameworkElement.Width - deltaX;
+            double newWidth = calculatedWidth - deltaX;
 
             if (newWidth > _minWidth)
             {
-               Canvas.SetLeft(AdornedElement, Canvas.GetLeft(AdornedElement) + deltaX);
-               _adornedFrameworkElement.Width = newWidth;
+               calculatedX = Math.Max(0.0, calculatedX + deltaX);
+
+               if (calculatedX > 0.0)
+               {
+                  calculatedWidth = newWidth;
+                  repositionX = true;
+               }
             }
             else
             {
-               _adornedFrameworkElement.Width = _minWidth;
+               calculatedWidth = _minWidth;
             }
          }
-         else if ((thumbPosition & ThumbPosition.Right) == ThumbPosition.Right)
+         else if ((thumb.Position & ThumbPosition.Right) == ThumbPosition.Right)
          {
-            _adornedFrameworkElement.Width = Math.Max(_adornedFrameworkElement.Width + deltaX, _minWidth);
+            calculatedWidth = Math.Max(_minWidth, calculatedWidth + deltaX);
+         }
+         else
+         {
+            // Thumb does not support horizontal resizing
+         }
+      }
+
+
+      /// <summary>
+      /// Helper method for calculating the amount of vertical resizing required
+      /// </summary>
+      /// <param name="thumb">Thumb that triggered resizing</param>
+      /// <param name="initialHeight">Initial height of the adorned element</param>
+      /// <param name="initialY">Initial Y-coordinate of the adorned element</param>
+      /// <param name="deltaY">Change in Y from the drag</param>
+      /// <param name="calculatedHeight">Calculated height after drag</param>
+      /// <param name="calculatedY">Calculated Y after drag</param>
+      /// <param name="repositionY">Flag indicated if Y-coordinate of adorned element changed</param>
+      private void ResizeElementVertical(ResizeThumb thumb, double initialHeight, double initialY, double deltaY, out double calculatedHeight, out double calculatedY, out bool repositionY)
+      {
+         calculatedHeight = initialHeight;
+         calculatedY = initialY;
+         repositionY = false;
+
+         if ((thumb.Position & ThumbPosition.Top) == ThumbPosition.Top)
+         {
+            double newHeight = calculatedHeight - deltaY;
+
+            if (newHeight > _minHeight)
+            {
+               calculatedY = Math.Max(0.0, calculatedY + deltaY);
+
+               if (calculatedY > 0.0)
+               {
+                  calculatedHeight = newHeight;
+                  repositionY = true;
+               }
+            }
+            else
+            {
+               calculatedHeight = _minHeight;
+            }
+         }
+         else if ((thumb.Position & ThumbPosition.Bottom) == ThumbPosition.Bottom)
+         {
+            calculatedHeight = Math.Max(_minHeight, calculatedHeight + deltaY);
+         }
+         else
+         {
+            // Thumb does not support vertical resizing
          }
       }
 

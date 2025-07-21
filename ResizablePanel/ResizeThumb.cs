@@ -66,6 +66,7 @@ namespace ResizablePanel
       /// </summary>
       /// <param name="thumbPosition">Position for this thumb</param>
       /// <param name="allowedDragDirections">Directions this thumb can be resized</param>
+      /// <exception cref="ArgumentException"></exception>
       public ResizeThumb(ThumbPosition thumbPosition, AllowedDragDirections allowedDragDirections)
       {
          if (!IsValidPosition(thumbPosition))
